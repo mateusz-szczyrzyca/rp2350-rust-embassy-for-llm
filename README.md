@@ -324,7 +324,7 @@ re-chunking files under `docs/`, regenerate it:
 
 ```bash
 python build-index.py
-# ✓ Wygenerowano docs/INDEX.md (NN KB)
+# ✓ Generated docs/INDEX.md (NN KB)
 ```
 
 How the script works (worth knowing if you extend the corpus):
@@ -334,11 +334,11 @@ How the script works (worth knowing if you extend the corpus):
     each file's **YAML frontmatter** and groups files (RP2040 datasheet, RP2350
     datasheet, Pico C SDK, board datasheets, hardware design, product briefs,
     other). Descriptions are built from `api_module` / `section` / `chapter` /
-    `source` metadata — so **good frontmatter yields a good index**. The English
-    chapter/section titles coming from that frontmatter are translated to Polish
-    on the fly via the `TITLE_PL` map in the script (exact-string match);
-    `api_module` values such as `hardware_pio` / `pico_stdlib` are **code
-    identifiers and are deliberately left untranslated**.
+    `source` metadata — so **good frontmatter yields a good index**. Chapter and
+    section titles are emitted verbatim from that frontmatter (they're already in
+    English, as extracted from the official RPi PDFs); `api_module` values such as
+    `hardware_pio` / `pico_stdlib` are code identifiers and are likewise kept
+    verbatim.
   - **Layer 2** walks the rest of `docs/`, counts `.md` files per repo, and
     attaches a human-written description from the `REPO_DESCRIPTIONS` /
     `top_titles` tables inside the script. **Add a new repo → add an entry to
@@ -349,17 +349,14 @@ How the script works (worth knowing if you extend the corpus):
 
 To add new silicon documentation, convert the PDF to Markdown, split it per
 section, **add YAML frontmatter** (`mcu`, `chapter`, `section`, `api_module`,
-`topics`), drop the files under `01-raspberrypi-pdfs-md/`, **add the Polish title
-for any new `chapter`/`section` to the `TITLE_PL` map** in `build-index.py`
-(otherwise it appears in its original English wording), and re-run the script.
+`topics`), drop the files under `01-raspberrypi-pdfs-md/`, and re-run the script.
 
-> **Language:** `INDEX.md` is **fully Polish** — section headings, repo
-> descriptions, and the chapter/section titles (translated via `TITLE_PL`). The
-> only English left is intentional: `api_module` code identifiers (`hardware_*`,
-> `pico_*`) and literal folder-name fallbacks. If you ever want an English index
-> instead, clear/replace `TITLE_PL` and translate the Polish strings in `order`,
-> `top_titles`, `REPO_DESCRIPTIONS`, and the headers in `render()`, then
-> regenerate.
+> **Language:** `INDEX.md` and `build-index.py` are both in **English** —
+> headings, repo descriptions, comments, and messages. Chapter/section titles
+> pass through from the source-PDF frontmatter unchanged, and code identifiers
+> (`api_module` names, crate names, paths in backticks) are kept verbatim. Repo
+> descriptions live in the `REPO_DESCRIPTIONS` / `top_titles` tables in the
+> script — edit those to change what Part 2 says.
 
 ---
 
